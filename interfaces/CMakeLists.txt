@@ -27,6 +27,7 @@ find_package(WPEFramework)
 
 find_package(CompileSettingsDebug REQUIRED)
 find_package(ProxyStubGenerator REQUIRED)
+find_package(JsonGenerator REQUIRED)
 find_package(${NAMESPACE}Core REQUIRED)
 find_package(${NAMESPACE}COM REQUIRED)
 
@@ -41,7 +42,15 @@ separate_arguments(INTERFACES_PATTERNS)
 file(GLOB INTERFACES_HEADERS ${INTERFACES_PATTERNS})
 ProxyStubGenerator(INPUT "${INTERFACES_HEADERS}" OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/generated" INCLUDE_PATH ${GENERATOR_SEARCH_PATH})
 
+JsonGenerator(CODE
+    INPUT ${INTERFACES_HEADERS}
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated"
+    INCLUDE_PATH ${GENERATOR_SEARCH_PATH}
+    LEGACY_ALT)
+
 file(GLOB JSON_HEADERS json/*.h)
+file(GLOB JSON_ENUM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/generated/JsonEnum*.cpp")
+file(GLOB JSON_LINK_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/generated/J*.h")
 list(APPEND INTERFACES_HEADERS Module.h)
 
 message(STATUS "Interface - ${INTERFACES_HEADERS}")
@@ -50,9 +59,15 @@ file(GLOB PROXY_STUB_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/generated/ProxyStubs*.
 add_library(${Target} SHARED
         Module.cpp
         ${PROXY_STUB_SOURCES}
+        ${JSON_ENUM_SOURCES}
         )
 
-target_include_directories(${Target} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/..)
+target_include_directories(${Target}
+        PRIVATE
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/..
+          ${CMAKE_SYSROOT}${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/${NAMESPACE}/definitions
+        )
 
 target_link_libraries(${Target}
         PRIVATE
@@ -86,6 +101,6 @@ install(
 )
 
 install(
-        FILES ${JSON_HEADERS}
+        FILES ${JSON_HEADERS} ${JSON_LINK_HEADERS}
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${NAMESPACE}/extensions/json COMPONENT ${NAMESPACE}_Development
 )
