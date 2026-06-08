@@ -90,7 +90,7 @@ The table below lists configuration options of the plugin.
 
 This plugin implements the following interfaces:
 
-- Exchange::IMessageControl ([IMessageControl.h](https://github.com/rdkcentral/ThunderInterfaces/blob/master/interfaces/IMessageControl.h)) (version 1.0.0) (compliant format)
+- Exchange::IMessagingControl ([IMessagingControl.h](https://github.com/rdkcentral/ThunderInterfaces/blob/master/interfaces/IMessagingControl.h)) (version 1.0.0) (compliant format)
 
 <a name="head.Methods"></a>
 # Methods

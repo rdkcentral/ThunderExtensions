@@ -19,7 +19,7 @@
 
 #include "MessageControl.h"
 #include "MessageOutput.h"
-#include <interfaces/json/JMessageControl.h>
+#include <interfaces/json/JMessagingControl.h>
 
 namespace WPEFramework {
 
@@ -140,7 +140,7 @@ namespace WPEFramework {
 #endif
         _webSocketExporter.Initialize(service, _config.MaxExportConnections.Value());
 
-        Exchange::JMessageControl::Register(*this, this);
+        Exchange::JMessagingControl::Register(*this, this);
 
         _service->Register(&_observer);
         
@@ -156,7 +156,7 @@ namespace WPEFramework {
         if (_service != nullptr) {
             ASSERT (_service == service);
 
-            Exchange::JMessageControl::Unregister(*this);
+            Exchange::JMessagingControl::Unregister(*this);
 
             Callback(nullptr);
 

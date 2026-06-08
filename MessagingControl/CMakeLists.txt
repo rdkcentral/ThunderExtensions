@@ -44,7 +44,6 @@ if(BUILD_REFERENCE)
 endif()
 
 find_package(${NAMESPACE}Plugins REQUIRED)
-find_package(${NAMESPACE}Definitions REQUIRED)
 find_package(${NAMESPACE}Messaging REQUIRED)
 find_package(CompileSettingsDebug CONFIG REQUIRED)
 
@@ -57,11 +56,23 @@ set_target_properties(${MODULE_NAME} PROPERTIES
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED YES)
 
+# Map generated headers so <interfaces/json/...> resolves from the build tree
+file(CREATE_LINK
+    "${CMAKE_BINARY_DIR}/interfaces/generated"
+    "${CMAKE_BINARY_DIR}/interfaces/json"
+    SYMBOLIC)
+
+target_include_directories(${MODULE_NAME}
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}                       # resolves <interfaces/IMessagingControl.h>
+        ${CMAKE_BINARY_DIR}                       # resolves <interfaces/json/JsonData_MessagingControl.h> via symlink
+        ${CMAKE_SOURCE_DIR}/interfaces            # resolves "Module.h" from generated headers
+        ${CMAKE_BINARY_DIR}/interfaces/generated) # resolves "JsonData_MessagingControl.h" from generated headers
+
 target_link_libraries(${MODULE_NAME} 
     PRIVATE
         CompileSettingsDebug::CompileSettingsDebug
         ${NAMESPACE}Plugins::${NAMESPACE}Plugins
-        ${NAMESPACE}Definitions::${NAMESPACE}Definitions
         ${NAMESPACE}Messaging::${NAMESPACE}Messaging)
 
 if(PLUGIN_MESSAGECONTROL_TELEMETRY_T2)

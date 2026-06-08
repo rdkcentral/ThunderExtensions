@@ -26,8 +26,8 @@
 #include <messaging/messaging.h>
 #include <plugins/plugins.h>
 
-#include <interfaces/IMessageControl.h>
-#include <interfaces/json/JsonData_MessageControl.h>
+#include <interfaces/IMessagingControl.h>
+#include <interfaces/json/JsonData_MessagingControl.h>
 
 
 #undef EXTERNAL
