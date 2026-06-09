@@ -1,0 +1,93 @@
+# If not stated otherwise in this file or this component's LICENSE file the
+# following copyright and licenses apply:
+#
+# Copyright 2022 RDK Management
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+project(MessageControl)
+
+cmake_minimum_required(VERSION 3.3)
+
+find_package(WPEFramework)
+
+project_version(1.0.0)
+
+set(MODULE_NAME ${NAMESPACE}${PROJECT_NAME})
+
+message("Setup ${MODULE_NAME} v${PROJECT_VERSION}")
+
+set(PLUGIN_MESSAGECONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
+set(PLUGIN_MESSAGECONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
+set(PLUGIN_MESSAGECONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
+set(PLUGIN_MESSAGECONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
+set(PLUGIN_MESSAGECONTROL_PORT "0" CACHE STRING "PORT address")
+set(PLUGIN_MESSAGECONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
+set(PLUGIN_MESSAGECONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
+option(PLUGIN_MESSAGECONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
+set(PLUGIN_MESSAGECONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
+
+add_subdirectory(BuffersFlush)
+
+if(BUILD_REFERENCE)
+    add_definitions(-DBUILD_REFERENCE=${BUILD_REFERENCE})
+endif()
+
+find_package(${NAMESPACE}Plugins REQUIRED)
+find_package(${NAMESPACE}Messaging REQUIRED)
+find_package(CompileSettingsDebug CONFIG REQUIRED)
+
+add_library(${MODULE_NAME} SHARED 
+    MessageControl.cpp
+    MessageOutput.cpp
+    Module.cpp)
+
+set_target_properties(${MODULE_NAME} PROPERTIES
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED YES)
+
+# Map generated headers so <interfaces/json/...> resolves from the build tree
+file(CREATE_LINK
+    "${CMAKE_BINARY_DIR}/interfaces/generated"
+    "${CMAKE_BINARY_DIR}/interfaces/json"
+    SYMBOLIC)
+
+target_include_directories(${MODULE_NAME}
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}                       # resolves <interfaces/IMessagingControl.h>
+        ${CMAKE_BINARY_DIR}                       # resolves <interfaces/json/JsonData_MessagingControl.h> via symlink
+        ${CMAKE_SOURCE_DIR}/interfaces            # resolves "Module.h" from generated headers
+        ${CMAKE_BINARY_DIR}/interfaces/generated) # resolves "JsonData_MessagingControl.h" from generated headers
+
+target_link_libraries(${MODULE_NAME} 
+    PRIVATE
+        CompileSettingsDebug::CompileSettingsDebug
+        ${NAMESPACE}Plugins::${NAMESPACE}Plugins
+        ${NAMESPACE}Messaging::${NAMESPACE}Messaging)
+
+if(PLUGIN_MESSAGECONTROL_TELEMETRY_T2)
+    add_subdirectory(TelemetryBackendT2)
+
+    target_link_libraries(${MODULE_NAME}
+        PRIVATE
+            ${NAMESPACE}TelemetryBackendT2)
+
+    target_compile_definitions(${MODULE_NAME}
+        PRIVATE
+            HAS_TELEMETRY_BACKEND=1)
+endif()
+
+install(TARGETS ${MODULE_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${STORAGE_DIRECTORY}/plugins COMPONENT ${NAMESPACE}_Runtime)
+
+write_config(INSTALL_PATH "${CMAKE_INSTALL_FULL_SYSCONFDIR}/${NAMESPACE}/plugins/" CUSTOM_PARAMS_WHITELIST "${CMAKE_CURRENT_SOURCE_DIR}/../params.config")
