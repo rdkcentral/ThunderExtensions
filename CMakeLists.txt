@@ -27,9 +27,9 @@ set(INTERFACES_PATTERNS "I*.h" CACHE STRING "Patterns matching files for which s
 set(JSONRPC_PATTERNS "*.json" CACHE STRING "Patterns matching files for which json stubs should be generated")
 
 if(ENABLE_STRICT_COMPILER_SETTINGS)
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        message(FATAL_ERROR "Compiling with Clang")
-        set(CMAKE_STRICT_COMPILER_SETTINGS "-Weverything -Wextra -Wpedantic -Werror")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+        message(STATUS "Compiling with Clang")
+        set(CMAKE_STRICT_COMPILER_SETTINGS "-Wall -Wextra -Wpedantic -Werror")
         set(CMAKE_STRICT_CXX_COMPILER_SETTINGS "${CMAKE_STRICT_COMPILER_SETTINGS} -Wnon-virtual-dtor")
     elseif(${CMAKE_COMPILER_IS_GNUCXX})
         message(STATUS "Compiling with GCC")
