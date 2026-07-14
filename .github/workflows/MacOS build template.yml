@@ -16,6 +16,9 @@ jobs:
 
     name: Build type - ${{matrix.build_type}}
     steps:
+    - name: Checkout current repository
+      uses: actions/checkout@v5
+
     - name: Install necessary packages
       env:
         HOMEBREW_NO_AUTO_UPDATE: 1
@@ -24,9 +27,6 @@ jobs:
         python3 -m venv venv
         source venv/bin/activate
         pip install jsonref
-
-    - name: Checkout current repository
-      uses: actions/checkout@v5
 
     - name: Download Thunder artifacts
       uses: actions/download-artifact@v4
