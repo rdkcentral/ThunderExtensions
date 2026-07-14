@@ -48,7 +48,7 @@ jobs:
         -DCMAKE_MODULE_PATH="${PWD}/${{matrix.build_type}}/install/usr/include/WPEFramework/Modules" \
         -DCMAKE_PREFIX_PATH="${PWD}/${{matrix.build_type}}/install/usr" \
         -DEXT_PLUGIN_INITIALIZER=ON \
-        -DEXT_SYSTEMD_CONNECTOR=ON
+        -DEXT_SYSTEMD_CONNECTOR=OFF
         cmake --build ${{matrix.build_type}}/build/ThunderExtensions --target install
 
     - name: Tar files
