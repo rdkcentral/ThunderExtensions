@@ -436,7 +436,7 @@ POP_WARNING()
                         // okay we failed from a situation where we were activated because the preconditions were not satisfied yet, we should restart but now as there could be a chance there are already too many activations so we need to postpone that until there is a slot available
                         // we should cancel the job to indicate we are not active anymore and indicate if possible we could start ourselves again (we cannot revoke the job as we are in the lock that also is needed in the job, should not be a problem coming from preconditions there is hardly another way to get to deinitialized other then subsystems being met and even if so it would be no problem the job would fire) 
                         TRACE(Trace::Warning, (_T("Plugin [%s] failed to initialize after waiting for preconditions to be met, attempt to activate again will be made when a slot becomes available"), Callsign().c_str() ));
-                        _activateJob = std::move(ActivateJobProxyType()); // not active anymore (let's not use Release() on the proxy as that look a little confusing)                
+                        _activateJob = ActivateJobProxyType(); // not active anymore (let's not use Release() on the proxy as that look a little confusing)
                         _waitingPrecondition = false; // indicate we are no longer waiting and this starter can be started again...
                         result = ResultCode::Paused; 
                     }
@@ -481,7 +481,7 @@ POP_WARNING()
                     // we should now see if we can start more activations
                     TRACE(Trace::Information, (_T("Plugin [%s] Activate call returned: preconditions pending"), Callsign().c_str()));
                     _waitingPrecondition = true;
-                    _activateJob = std::move(ActivateJobProxyType()); // not active anymore (let's not use Release() on the proxy as that look a little confusing)                
+                    _activateJob = ActivateJobProxyType(); // not active anymore (let's not use Release() on the proxy as that look a little confusing)
                     resultcode = ResultCode::Paused;
                     break;
                 case Core::ERROR_ILLEGAL_STATE: // quite unexpected as now between posting the Activation job and calling Activate on the plugin it moved to some illegal state, must have been triggered externally...
@@ -554,12 +554,12 @@ POP_WARNING()
             {
                 if (_activateResultJob.IsValid() == true) {
                     _activateResultJob->RevokeAndBlock();
-                    _activateResultJob = std::move(ActivateResultJobProxyType()); // we can let of our reference (let's not use Release() on the proxy as that look a little confusing)
+                    _activateResultJob = ActivateResultJobProxyType(); // we can let of our reference (let's not use Release() on the proxy as that look a little confusing)
                 }
                 // note now awe are sure the _activateResultJob will not longer run at all, even if the _activateJob is running or will run... (so note order of revoking the _activateResultJob and _activateJob is important)
                 if (_activateJob.IsValid() == true) {
                      _activateJob->Revoke(Core::ProxyType<Core::IDispatch>(_activateJob)); // note this revoke could be while running the ActivationJob itself this is allowed, We can also not skip the revocation as the activation might also be the result of an externally triggered activation
-                    _activateJob = std::move(ActivateJobProxyType()); // not active anymore (let's not use Release() on the proxy as that look a little confusing)
+                    _activateJob = ActivateJobProxyType(); // not active anymore (let's not use Release() on the proxy as that look a little confusing)
                 }
             }
 

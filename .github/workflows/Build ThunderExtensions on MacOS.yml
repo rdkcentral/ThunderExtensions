@@ -1,0 +1,19 @@
+name: Build ThunderExtensions on MacOS
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  Thunder:
+    uses: rdkcentral/Thunder/.github/workflows/MacOS build template.yml@master
+
+  ThunderExtensions:
+    needs: Thunder
+    uses: ./.github/workflows/MacOS build template.yml

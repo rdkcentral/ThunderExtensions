@@ -1,0 +1,61 @@
+name: MacOS build template
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+
+jobs:
+  ThunderExtensions:
+    runs-on: macos-14
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release, MinSizeRel]
+
+    name: Build type - ${{matrix.build_type}}
+    steps:
+    - name: Checkout current repository
+      uses: actions/checkout@v5
+
+    - name: Install necessary packages
+      env:
+        HOMEBREW_NO_AUTO_UPDATE: 1
+      run: |
+        brew install ninja zlib
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install jsonref
+
+    - name: Download Thunder artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: Thunder-${{matrix.build_type}}-artifact
+        path: ${{matrix.build_type}}
+
+    - name: Unpack Thunder artifacts
+      run: |
+        tar -xvzf ${{matrix.build_type}}/${{matrix.build_type}}.tar.gz
+        rm ${{matrix.build_type}}/${{matrix.build_type}}.tar.gz
+
+    - name: Build ThunderExtensions
+      run: |
+        source venv/bin/activate
+        cmake -G Ninja -S . -B ${{matrix.build_type}}/build/ThunderExtensions \
+        -DCMAKE_BUILD_TYPE=${{matrix.build_type}} \
+        -DCMAKE_INSTALL_PREFIX="${{matrix.build_type}}/install/usr" \
+        -DCMAKE_MODULE_PATH="${PWD}/${{matrix.build_type}}/install/usr/include/WPEFramework/Modules" \
+        -DCMAKE_PREFIX_PATH="${PWD}/${{matrix.build_type}}/install/usr" \
+        -DEXT_PLUGIN_INITIALIZER=ON \
+        -DEXT_SYSTEMD_CONNECTOR=OFF
+        cmake --build ${{matrix.build_type}}/build/ThunderExtensions --target install
+
+    - name: Tar files
+      run: tar -czvf ${{matrix.build_type}}.tar.gz ${{matrix.build_type}}
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ThunderExtensions-${{matrix.build_type}}-artifact
+        path: ${{matrix.build_type}}.tar.gz
