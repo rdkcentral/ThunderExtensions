@@ -1,0 +1,84 @@
+name: Build ThunderExtensions on Windows
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  pluginInitializerService: ThunderExtensions\PluginInitializerService\PluginInitializerService.vcxproj
+  solution: Thunder.sln
+
+jobs:
+  ThunderExtensions:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        type: [Debug, Release]
+        version: [64]
+
+    name: Build type - ${{matrix.type}}${{matrix.version}}
+    steps:
+# ----- Checkout -----
+    - name: Checkout ThunderOnWindows
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows
+        repository: WebPlatformForEmbedded/ThunderOnWindows
+
+    - name: Checkout Thunder
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows/Thunder
+        repository: ${{github.repository_owner}}/Thunder
+
+    - name: Checkout ThunderTools
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows/ThunderTools
+        repository: ${{github.repository_owner}}/ThunderTools
+
+    - name: Checkout ThunderClientLibraries
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows/ThunderClientLibraries
+        repository: ${{github.repository_owner}}/ThunderClientLibraries
+
+    - name: Checkout ThunderInterfaces
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows/ThunderInterfaces
+        repository: ${{github.repository_owner}}/ThunderInterfaces
+
+    - name: Checkout ThunderExtensions
+      uses: actions/checkout@v5
+      with:
+        path: ThunderOnWindows/ThunderExtensions
+
+# ----- Build & upload artifacts -----
+    - name: Build PluginInitializerService
+      shell: cmd
+      run: |
+        for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.CoreEditor -property productPath`) do set "VS_PATH=%%i"
+        if not defined VS_PATH (echo ERROR: Visual Studio not found && exit /b 1)
+
+        set "devEnv=%VS_PATH:.exe=.com%"
+        cd ThunderOnWindows
+
+        "%devEnv%" /Build "${{matrix.type}}|x${{matrix.version}}" /Project "%pluginInitializerService%" "%solution%"
+        if errorlevel 1 exit /b 1
+
+    - name: Tar files
+      run: tar -czvf ${{matrix.type}}${{matrix.version}}.tar.gz artifacts
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ThunderExtensions-${{matrix.type}}${{matrix.version}}-artifact
+        path: ${{matrix.type}}${{matrix.version}}.tar.gz
