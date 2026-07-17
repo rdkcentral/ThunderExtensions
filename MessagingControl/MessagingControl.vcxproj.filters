@@ -7,7 +7,7 @@
     <ClCompile Include="MessageOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MessageControl.cpp">
+    <ClCompile Include="MessagingControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -18,7 +18,7 @@
     <ClInclude Include="MessageOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MessageControl.h">
+    <ClInclude Include="MessagingControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-#include "MessageControl.h"
+#include "MessagingControl.h"
 #include "MessageOutput.h"
 #include <interfaces/json/JMessagingControl.h>
 
@@ -27,7 +27,7 @@ namespace WPEFramework {
 
     namespace {
 
-        static Metadata<MessageControl> metadata(
+        static Metadata<MessagingControl> metadata(
             // Version
             1, 0, 0,
             // Preconditions
@@ -39,7 +39,7 @@ namespace WPEFramework {
         );
     }
 
-    MessageControl::Config::NetworkNode::NetworkNode()
+    MessagingControl::Config::NetworkNode::NetworkNode()
         : Core::JSON::Container()
         , Port(2200)
         , Binding("0.0.0.0")
@@ -50,7 +50,7 @@ namespace WPEFramework {
         Add(_T("interface"), &Interface);
     }
 
-    MessageControl::Config::NetworkNode::NetworkNode(const NetworkNode& copy)
+    MessagingControl::Config::NetworkNode::NetworkNode(const NetworkNode& copy)
         : Core::JSON::Container()
         , Port(copy.Port)
         , Binding(copy.Binding)
@@ -61,7 +61,7 @@ namespace WPEFramework {
         Add(_T("interface"), &Interface);
     }
 
-    MessageControl::MessageControl()
+    MessagingControl::MessagingControl()
         : _adminLock()
         , _outputLock()
         , _config()
@@ -91,7 +91,7 @@ namespace WPEFramework {
         _client.AddFactory(Core::Messaging::Metadata::type::TELEMETRY, &_telemetryFactory);
     }
 
-    const string MessageControl::Initialize(PluginHost::IShell* service)
+    const string MessagingControl::Initialize(PluginHost::IShell* service)
     {
         string message;
 
@@ -145,13 +145,13 @@ namespace WPEFramework {
         _service->Register(&_observer);
         
         if (Callback(&_observer) != Core::ERROR_NONE) {
-            message = _T("MessageControl plugin could not be _configured.");
+            message = _T("MessagingControl plugin could not be _configured.");
         }
 
         return (message);
     }
 
-    void MessageControl::Deinitialize(VARIABLE_IS_NOT_USED PluginHost::IShell* service)
+    void MessagingControl::Deinitialize(VARIABLE_IS_NOT_USED PluginHost::IShell* service)
     {
         if (_service != nullptr) {
             ASSERT (_service == service);
@@ -182,29 +182,29 @@ namespace WPEFramework {
         }
     }
 
-    string MessageControl::Information() const {
+    string MessagingControl::Information() const {
         // No additional info to report.
         return (string());
     }
 
-    bool MessageControl::Attach(PluginHost::Channel& channel)
+    bool MessagingControl::Attach(PluginHost::Channel& channel)
     {
         TRACE(Trace::Information, (Core::Format(_T("Attaching channel ID [%d]"), channel.Id()).c_str()));
         
         return (_webSocketExporter.Attach(channel.Id()));
     }
 
-    void MessageControl::Detach(PluginHost::Channel& channel)
+    void MessagingControl::Detach(PluginHost::Channel& channel)
     {
         TRACE(Trace::Information, (Core::Format(_T("Detaching channel ID [%d]"), channel.Id()).c_str()));
         _webSocketExporter.Detach(channel.Id());
     }
 
-    Core::ProxyType<Core::JSON::IElement> MessageControl::Inbound(const string&) {
+    Core::ProxyType<Core::JSON::IElement> MessagingControl::Inbound(const string&) {
         return (_webSocketExporter.Command());
     }
 
-    Core::ProxyType<Core::JSON::IElement> MessageControl::Inbound(const uint32_t ID, const Core::ProxyType<Core::JSON::IElement>& element) {
+    Core::ProxyType<Core::JSON::IElement> MessagingControl::Inbound(const uint32_t ID, const Core::ProxyType<Core::JSON::IElement>& element) {
         return (Core::ProxyType<Core::JSON::IElement>(_webSocketExporter.Received(ID, element)));
     }
 

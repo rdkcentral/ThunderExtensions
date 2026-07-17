@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(MessageControl)
+project(MessagingControl)
 
 cmake_minimum_required(VERSION 3.3)
 
@@ -27,15 +27,15 @@ set(MODULE_NAME ${NAMESPACE}${PROJECT_NAME})
 
 message("Setup ${MODULE_NAME} v${PROJECT_VERSION}")
 
-set(PLUGIN_MESSAGECONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
-set(PLUGIN_MESSAGECONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
-set(PLUGIN_MESSAGECONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
-set(PLUGIN_MESSAGECONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
-set(PLUGIN_MESSAGECONTROL_PORT "0" CACHE STRING "PORT address")
-set(PLUGIN_MESSAGECONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
-set(PLUGIN_MESSAGECONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
-option(PLUGIN_MESSAGECONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
-set(PLUGIN_MESSAGECONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
+set(EXTN_MESSAGINGCONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
+set(EXTN_MESSAGINGCONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
+set(EXTN_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
+set(EXTN_MESSAGINGCONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
+set(EXTN_MESSAGINGCONTROL_PORT "0" CACHE STRING "PORT address")
+set(EXTN_MESSAGINGCONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
+set(EXTN_MESSAGINGCONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
+option(EXTN_MESSAGINGCONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
+set(EXTN_MESSAGINGCONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
 
 add_subdirectory(BuffersFlush)
 
@@ -48,7 +48,7 @@ find_package(${NAMESPACE}Messaging REQUIRED)
 find_package(CompileSettingsDebug CONFIG REQUIRED)
 
 add_library(${MODULE_NAME} SHARED 
-    MessageControl.cpp
+    MessagingControl.cpp
     MessageOutput.cpp
     Module.cpp)
 
@@ -75,7 +75,7 @@ target_link_libraries(${MODULE_NAME}
         ${NAMESPACE}Plugins::${NAMESPACE}Plugins
         ${NAMESPACE}Messaging::${NAMESPACE}Messaging)
 
-if(PLUGIN_MESSAGECONTROL_TELEMETRY_T2)
+if(EXTN_MESSAGINGCONTROL_TELEMETRY_T2)
     add_subdirectory(TelemetryBackendT2)
 
     target_link_libraries(${MODULE_NAME}

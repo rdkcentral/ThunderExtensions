@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-#include "../MessageControl/TelemetryOutput.h"
+#include "../MessagingControl/TelemetryOutput.h"
 
 #ifndef MODULE_NAME
 #define MODULE_NAME TelemetryBackendT2

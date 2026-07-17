@@ -30,7 +30,7 @@ namespace WPEFramework {
 
 namespace Plugin {
 
-    class MessageControl : public PluginHost::JSONRPC, public PluginHost::IPluginExtended, public PluginHost::IWebSocket, public Exchange::IMessagingControl {
+    class MessagingControl : public PluginHost::JSONRPC, public PluginHost::IPluginExtended, public PluginHost::IWebSocket, public Exchange::IMessagingControl {
     private:
         using Cleanups  = std::vector<uint32_t>;
 
@@ -40,7 +40,7 @@ namespace Plugin {
             WorkerThread(const WorkerThread&) = delete;
             WorkerThread& operator= (const WorkerThread&) = delete;
 
-            WorkerThread(MessageControl& parent)
+            WorkerThread(MessagingControl& parent)
                 : Core::Thread()
                 , _parent(parent)
             {
@@ -56,7 +56,7 @@ namespace Plugin {
             }
 
         private:
-            MessageControl& _parent;
+            MessagingControl& _parent;
         };
 
     private:
@@ -131,7 +131,7 @@ namespace Plugin {
 
         class Observer
             : public RPC::IRemoteConnection::INotification
-            , public Plugin::MessageControl::ICollect::ICallback {
+            , public Plugin::MessagingControl::ICollect::ICallback {
         private:
             enum state {
                 ATTACHING,
@@ -145,7 +145,7 @@ namespace Plugin {
             Observer(const Observer&) = delete;
             Observer& operator= (const Observer&) = delete;
 
-            explicit Observer(MessageControl& parent)
+            explicit Observer(MessagingControl& parent)
                 : _parent(parent)
                 , _adminLock()
                 , _observing()
@@ -279,26 +279,26 @@ namespace Plugin {
             }
 
         private:
-            MessageControl& _parent;
+            MessagingControl& _parent;
             Core::CriticalSection _adminLock;
             Observers _observing;
             Core::WorkerPool::JobType<Observer&> _job;
         };
 
     public:
-        MessageControl(const MessageControl&) = delete;
-        MessageControl& operator=(const MessageControl&) = delete;
+        MessagingControl(const MessagingControl&) = delete;
+        MessagingControl& operator=(const MessagingControl&) = delete;
 
-        MessageControl();
+        MessagingControl();
 
-        ~MessageControl() override
+        ~MessagingControl() override
         {
             _worker.Stop();
             _worker.Wait(Core::Thread::STOPPED, Core::infinite);
             _client.ClearInstances();
         }
 
-        BEGIN_INTERFACE_MAP(MessageControl)
+        BEGIN_INTERFACE_MAP(MessagingControl)
             INTERFACE_ENTRY(PluginHost::IPlugin)
             INTERFACE_ENTRY(PluginHost::IDispatcher)
             INTERFACE_ENTRY(PluginHost::IPluginExtended)
@@ -343,7 +343,7 @@ namespace Plugin {
         }
 
     public:
-        uint32_t Callback(Plugin::MessageControl::ICollect::ICallback* callback)
+        uint32_t Callback(Plugin::MessagingControl::ICollect::ICallback* callback)
         {
             _adminLock.Lock();
 
@@ -472,7 +472,7 @@ namespace Plugin {
         Config _config;
         OutputList _outputDirector;
         Publishers::WebSocketOutput _webSocketExporter;
-        MessageControl::ICollect::ICallback* _callback;
+        MessagingControl::ICollect::ICallback* _callback;
         Cleanups _cleaning;
         Core::Sink<Observer> _observer;
         PluginHost::IShell* _service;

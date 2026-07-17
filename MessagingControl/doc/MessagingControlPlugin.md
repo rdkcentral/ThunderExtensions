@@ -1,12 +1,12 @@
 <!-- Generated automatically, DO NOT EDIT! -->
-<a name="head.MessageControl_Plugin"></a>
-# MessageControl Plugin
+<a name="head.MessagingControl_Extension"></a>
+# MessagingControl Extension
 
 **Version: 1.0**
 
 **Status: :black_circle::white_circle::white_circle:**
 
-MessageControl plugin for Thunder framework.
+MessagingControl plugin for Thunder framework.
 
 ### Table of Contents
 
@@ -23,7 +23,7 @@ MessageControl plugin for Thunder framework.
 <a name="head.Scope"></a>
 ## Scope
 
-This document describes purpose and functionality of the MessageControl plugin. It includes detailed specification about its configuration, methods and properties provided.
+This document describes purpose and functionality of the MessagingControl plugin. It includes detailed specification about its configuration, methods and properties provided.
 
 <a name="head.Case_Sensitivity"></a>
 ## Case Sensitivity
@@ -61,7 +61,7 @@ The table below provides and overview of terms and abbreviations used in this do
 <a name="head.Description"></a>
 # Description
 
-The MessageControl plugin allows reading of the traces from WPEFramework, and controlling them tracing and logging. Allows for outputting logging messages to the websocket.
+The MessagingControl plugin allows reading of the traces from WPEFramework, and controlling them tracing and logging. Allows for outputting logging messages to the websocket.
 
 The plugin is designed to be loaded and executed within the Thunder framework. For more information about the framework refer to [[Thunder](#ref.Thunder)].
 
@@ -72,9 +72,9 @@ The table below lists configuration options of the plugin.
 
 | Name | Type | Description |
 | :-------- | :-------- | :-------- |
-| callsign | string | Plugin instance name (default: *MessageControl*) |
-| classname | string | Class name: *MessageControl* |
-| locator | string | Library name: *libWPEFrameworkMessageControl.so* |
+| callsign | string | Plugin instance name (default: *MessagingControl*) |
+| classname | string | Class name: *MessagingControl* |
+| locator | string | Library name: *libWPEFrameworkMessagingControl.so* |
 | autostart | boolean | Determines if the plugin shall be started automatically along with the framework |
 | console | boolean | <sup>*(optional)*</sup> Enables message output messages to the console |
 | syslog | boolean | <sup>*(optional)*</sup> Enables message ouutput to syslog |
@@ -95,9 +95,9 @@ This plugin implements the following interfaces:
 <a name="head.Methods"></a>
 # Methods
 
-The following methods are provided by the MessageControl plugin:
+The following methods are provided by the MessagingControl plugin:
 
-MessageControl interface methods:
+MessagingControl interface methods:
 
 | Method | Description |
 | :-------- | :-------- |
@@ -133,7 +133,7 @@ Enables/disables a message control.
 {
     "jsonrpc": "2.0",
     "id": 42,
-    "method": "MessageControl.1.enable",
+    "method": "MessagingControl.1.enable",
     "params": {
         "type": "Tracing",
         "category": "Information",
@@ -156,9 +156,9 @@ Enables/disables a message control.
 <a name="head.Properties"></a>
 # Properties
 
-The following properties are provided by the MessageControl plugin:
+The following properties are provided by the MessagingControl plugin:
 
-MessageControl interface properties:
+MessagingControl interface properties:
 
 | Property | Description |
 | :-------- | :-------- |
@@ -193,7 +193,7 @@ Provides access to the retrieves a list of current message controls.
 {
     "jsonrpc": "2.0",
     "id": 42,
-    "method": "MessageControl.1.controls"
+    "method": "MessagingControl.1.controls"
 }
 ```
 
