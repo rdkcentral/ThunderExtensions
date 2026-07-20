@@ -34,13 +34,9 @@ option(TELEMETRY_BACKEND_T2_USE_MOCK "Build and link the mock telemetry_msgsende
 
 if(TELEMETRY_BACKEND_T2_USE_MOCK)
     add_subdirectory(mock)
-    set(telemetry_msgsender_FOUND TRUE)
+    set(TELEMETRY_FOUND TRUE)
 else()
-    find_package(Telemetry)
-endif()
-
-if(NOT TELEMETRY_FOUND)
-    message(FATAL_ERROR "telemetry_msgsender library not found — set TELEMETRY_BACKEND_T2_USE_MOCK=ON to build with the mock library")
+    find_package(Telemetry QUIET)
 endif()
 
 add_library(${MODULE_NAME} STATIC
@@ -59,6 +55,7 @@ target_link_libraries(${MODULE_NAME}
     PRIVATE
         CompileSettingsDebug::CompileSettingsDebug
         ${NAMESPACE}Core::${NAMESPACE}Core)
+
 if (TELEMETRY_FOUND)
     target_link_libraries(${MODULE_NAME} PRIVATE ${TELEMETRY_LIBRARIES})
     target_include_directories(${MODULE_NAME} PRIVATE ${TELEMETRY_INCLUDE_DIRS})
