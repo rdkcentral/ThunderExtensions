@@ -27,15 +27,15 @@ set(MODULE_NAME ${NAMESPACE}${PROJECT_NAME})
 
 message("Setup ${MODULE_NAME} v${PROJECT_VERSION}")
 
-set(EXTN_MESSAGINGCONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
-set(EXTN_MESSAGINGCONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
-set(EXTN_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
-set(EXTN_MESSAGINGCONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
-set(EXTN_MESSAGINGCONTROL_PORT "0" CACHE STRING "PORT address")
-set(EXTN_MESSAGINGCONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
-set(EXTN_MESSAGINGCONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
-option(EXTN_MESSAGINGCONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
-set(EXTN_MESSAGINGCONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
+set(EXT_MESSAGINGCONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
+set(EXT_MESSAGINGCONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
+set(EXT_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
+set(EXT_MESSAGINGCONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
+set(EXT_MESSAGINGCONTROL_PORT "0" CACHE STRING "PORT address")
+set(EXT_MESSAGINGCONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
+set(EXT_MESSAGINGCONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
+option(EXT_MESSAGINGCONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
+set(EXT_MESSAGINGCONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
 
 add_subdirectory(BuffersFlush)
 
@@ -75,7 +75,7 @@ target_link_libraries(${MODULE_NAME}
         ${NAMESPACE}Plugins::${NAMESPACE}Plugins
         ${NAMESPACE}Messaging::${NAMESPACE}Messaging)
 
-if(EXTN_MESSAGINGCONTROL_TELEMETRY_T2)
+if(EXT_MESSAGINGCONTROL_TELEMETRY_T2)
     add_subdirectory(TelemetryBackendT2)
 
     target_link_libraries(${MODULE_NAME}

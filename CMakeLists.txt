@@ -57,7 +57,7 @@ if(EXT_SYSTEMD_CONNECTOR)
     add_subdirectory(SystemdConnector)
 endif()
 
-if(EXT_MESSAGING_CONTROL)
+if(EXT_MESSAGINGCONTROL)
     add_subdirectory(MessagingControl)
 endif()
 
