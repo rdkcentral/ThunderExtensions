@@ -27,11 +27,11 @@ set(MODULE_NAME ${NAMESPACE}${PROJECT_NAME})
 
 message("Setup ${MODULE_NAME} v${PROJECT_VERSION}")
 
-set(PLUGIN_PLUGININITIALIZERSERVICE_STARTMODE "Activated" CACHE STRING "Automatically start PluginInitializerService plugin")
-set(PLUGIN_PLUGININITIALIZERSERVICE_MAXPARALLEL "2" CACHE STRING "Maximum number of plugins that can be started in parallel")
-set(PLUGIN_PLUGININITIALIZERSERVICE_DEFAULTMAXRETRIES "10" CACHE STRING "Default maximum number of retries used starting a plugin")
-set(PLUGIN_PLUGININITIALIZERSERVICE_DEFAULTDELAY "500" CACHE STRING "Default delay between retries starting a plugin (ms)")
-set(PLUGIN_PLUGININITIALIZERSERVICE_EXTENSION "true" CACHE STRING "Set this as an Extension")
+set(EXT_PLUGININITIALIZERSERVICE_STARTMODE "Activated" CACHE STRING "Automatically start PluginInitializerService plugin")
+set(EXT_PLUGININITIALIZERSERVICE_MAXPARALLEL "2" CACHE STRING "Maximum number of plugins that can be started in parallel")
+set(EXT_PLUGININITIALIZERSERVICE_DEFAULTMAXRETRIES "10" CACHE STRING "Default maximum number of retries used starting a plugin")
+set(EXT_PLUGININITIALIZERSERVICE_DEFAULTDELAY "500" CACHE STRING "Default delay between retries starting a plugin (ms)")
+set(EXT_PLUGININITIALIZERSERVICE_EXTENSION "true" CACHE STRING "Set this as an Extension")
 
 if(BUILD_REFERENCE)
     add_definitions(-DBUILD_REFERENCE=${BUILD_REFERENCE})
