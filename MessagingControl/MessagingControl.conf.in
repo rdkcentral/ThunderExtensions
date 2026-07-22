@@ -1,27 +1,27 @@
-autostart = "@EXTN_MESSAGINGCONTROL_AUTOSTART@"
+autostart = "@EXT_MESSAGINGCONTROL_AUTOSTART@"
 
 configuration = JSON()
 
-if boolean("@EXTN_MESSAGINGCONTROL_CONSOLE@"):
-  configuration.add("console", "@EXTN_MESSAGINGCONTROL_CONSOLE@")
+if boolean("@EXT_MESSAGINGCONTROL_CONSOLE@"):
+  configuration.add("console", "@EXT_MESSAGINGCONTROL_CONSOLE@")
 
-if boolean("@EXTN_MESSAGINGCONTROL_SYSLOG@"):
-  configuration.add("syslog", "@EXTN_MESSAGINGCONTROL_SYSLOG@")
+if boolean("@EXT_MESSAGINGCONTROL_SYSLOG@"):
+  configuration.add("syslog", "@EXT_MESSAGINGCONTROL_SYSLOG@")
 
-if boolean("@EXTN_MESSAGINGCONTROL_FILENAME@"):
-  configuration.add("filepath", "@EXTN_MESSAGINGCONTROL_FILENAME@")
+if boolean("@EXT_MESSAGINGCONTROL_FILENAME@"):
+  configuration.add("filepath", "@EXT_MESSAGINGCONTROL_FILENAME@")
 
-if boolean("@EXTN_MESSAGINGCONTROL_ABBREVIATED@"):
-  configuration.add("abbreviated", "@EXTN_MESSAGINGCONTROL_ABBREVIATED@")
+if boolean("@EXT_MESSAGINGCONTROL_ABBREVIATED@"):
+  configuration.add("abbreviated", "@EXT_MESSAGINGCONTROL_ABBREVIATED@")
 
-configuration.add("maxexportconnections", "@EXTN_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS@")
+configuration.add("maxexportconnections", "@EXT_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS@")
 
-if boolean("@EXTN_MESSAGINGCONTROL_REMOTE@"):
+if boolean("@EXT_MESSAGINGCONTROL_REMOTE@"):
   remote = JSON()
-  remote.add("port", "@EXTN_MESSAGINGCONTROL_PORT@")
-  remote.add("binding", "@EXTN_MESSAGINGCONTROL_BINDING@")
-  remote.add("interface", "@EXTN_MESSAGINGCONTROL_INTERFACE@")
+  remote.add("port", "@EXT_MESSAGINGCONTROL_PORT@")
+  remote.add("binding", "@EXT_MESSAGINGCONTROL_BINDING@")
+  remote.add("interface", "@EXT_MESSAGINGCONTROL_INTERFACE@")
   configuration.add("remote", remote)
 
-if boolean("@EXTN_MESSAGINGCONTROL_TELEMETRY_T2@"):
-  configuration.add("telemetryconfig", "@EXTN_MESSAGINGCONTROL_TELEMETRY_CONFIG@")
+if boolean("@EXT_MESSAGINGCONTROL_TELEMETRY_T2@"):
+  configuration.add("telemetryconfig", "@EXT_MESSAGINGCONTROL_TELEMETRY_CONFIG@")
