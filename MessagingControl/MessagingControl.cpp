@@ -144,9 +144,14 @@ namespace WPEFramework {
 
         _service->Register(&_observer);
         
+        const uint16_t dataSize = Messaging::MessageUnit::Instance().ConfiguredDataSize();
+        TRACE_L1("[MessageControl diagnostic] Initialize: instance=%p, dataSize=%u, startWorker=%s",
+            static_cast<void*>(this),
+            static_cast<unsigned>(dataSize),
+            (dataSize != 0 ? _T("true") : _T("false")));
         // In DirectOutput mode (-f) no data buffer is created, so there is nothing
         // for the worker to drain. Only create the worker thread when a data buffer exists.
-        if (Messaging::MessageUnit::Instance().DataSize != 0) {
+        if (dataSize != 0) {
             _worker = new WorkerThread(*this);
 
             if (Callback(&_observer) != Core::ERROR_NONE) {
