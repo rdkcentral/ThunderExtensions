@@ -146,7 +146,7 @@ namespace WPEFramework {
         
         // In DirectOutput mode (-f) no data buffer is created, so there is nothing
         // for the worker to drain. Only create the worker thread when a data buffer exists.
-        if (Messaging::MessageUnit::Instance().DataSize() != 0) {
+        if (Messaging::MessageUnit::Instance().DataSize != 0) {
             _worker = new WorkerThread(*this);
 
             if (Callback(&_observer) != Core::ERROR_NONE) {
