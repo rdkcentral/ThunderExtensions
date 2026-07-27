@@ -46,6 +46,7 @@ extern "C" {
 uint32_t TelemetryBackend_Configure(const char* configuration)
 {
     std::string component("Thunder");
+    TRACE_L1("[TELEMETRY_DEBUG] Received TelemetryBackend_Configure() with configuration: %s", (configuration != nullptr ? configuration : "<null>"));
 
     if (configuration != nullptr && configuration[0] != '\0') {
         WPEFramework::Core::JSON::String jsonComponent;
@@ -61,6 +62,7 @@ uint32_t TelemetryBackend_Configure(const char* configuration)
     std::vector<char> componentBuf(component.begin(), component.end());
     componentBuf.push_back('\0');
     t2_init(componentBuf.data());
+    TRACE_L1("[TELEMETRY_DEBUG] t2_init() called with component: %s", componentBuf.data());
 
     g_initialized = true;
 
@@ -74,21 +76,25 @@ uint32_t TelemetryBackend_Send(const char* category, const char* /* module */,
 {
     uint32_t result = 1;
 
+    TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() called with category: %s", category);
     if (g_initialized == true) {
         switch (type) {
         case TELEMETRY_VALUE_TEXT:
+            TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %s", category, static_cast<const char*>(value));
             result = (t2_event_s(category, static_cast<const char*>(value)) == 0) ? 0 : 1;
             break;
         case TELEMETRY_VALUE_INT8:
         case TELEMETRY_VALUE_INT16:
         case TELEMETRY_VALUE_INT32: {
             int64_t v = *static_cast<const int64_t*>(value);
+            TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %" PRId64, category, v);
             result = (t2_event_d(category, static_cast<int>(v)) == 0) ? 0 : 1;
             break;
         }
         case TELEMETRY_VALUE_INT64: {
             int64_t v = *static_cast<const int64_t*>(value);
             if ((v >= INT_MIN) && (v <= INT_MAX)) {
+                TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %" PRId64, category, v);
                 result = (t2_event_d(category, static_cast<int>(v)) == 0) ? 0 : 1;
             }
             break;
@@ -96,6 +102,7 @@ uint32_t TelemetryBackend_Send(const char* category, const char* /* module */,
         case TELEMETRY_VALUE_UINT8:
         case TELEMETRY_VALUE_UINT16: {
             uint64_t v = *static_cast<const uint64_t*>(value);
+            TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %" PRIu64, category, v);
             result = (t2_event_d(category, static_cast<int>(v)) == 0) ? 0 : 1;
             break;
         }
@@ -103,17 +110,20 @@ uint32_t TelemetryBackend_Send(const char* category, const char* /* module */,
         case TELEMETRY_VALUE_UINT64: {
             uint64_t v = *static_cast<const uint64_t*>(value);
             if (v <= static_cast<uint64_t>(INT_MAX)) {
+                TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %" PRIu64, category, v);
                 result = (t2_event_d(category, static_cast<int>(v)) == 0) ? 0 : 1;
             }
             break;
         }
         case TELEMETRY_VALUE_FLOAT32: {
             float v = *static_cast<const float*>(value);
+            TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %f", category, v);
             result = (t2_event_f(category, static_cast<double>(v)) == 0) ? 0 : 1;
             break;
         }
         case TELEMETRY_VALUE_FLOAT64: {
             double v = *static_cast<const double*>(value);
+            TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() with category: %s, value: %f", category, v);
             result = (t2_event_f(category, v) == 0) ? 0 : 1;
             break;
         }
@@ -121,16 +131,20 @@ uint32_t TelemetryBackend_Send(const char* category, const char* /* module */,
             break;
         }
     }
+    TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Send() completed with category: %s, result: %u", category, result);
 
     return (result);
 }
 
 uint32_t TelemetryBackend_Teardown(void)
 {
+    TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Teardown() called");
     if (g_initialized == true) {
+        TRACE_L1("[TELEMETRY_DEBUG] Calling t2_uninit()");
         t2_uninit();
         g_initialized = false;
     }
+    TRACE_L1("[TELEMETRY_DEBUG] TelemetryBackend_Teardown() completed");
 
     return (0);
 }
