@@ -35,7 +35,7 @@ set(EXT_MESSAGINGCONTROL_PORT "0" CACHE STRING "PORT address")
 set(EXT_MESSAGINGCONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
 set(EXT_MESSAGINGCONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
 option(EXT_MESSAGINGCONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
-set(EXT_MESSAGINGCONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
+set(EXT_MESSAGINGCONTROL_TELEMETRY_COMPONENT "Thunder" CACHE STRING "Component string that should be used for the telemetry backend init")
 
 add_subdirectory(BuffersFlush)
 

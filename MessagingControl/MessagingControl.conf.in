@@ -24,4 +24,6 @@ if boolean("@EXT_MESSAGINGCONTROL_REMOTE@"):
   configuration.add("remote", remote)
 
 if boolean("@EXT_MESSAGINGCONTROL_TELEMETRY_T2@"):
-  configuration.add("telemetryconfig", "@EXT_MESSAGINGCONTROL_TELEMETRY_CONFIG@")
+  telemetry_config = JSON()
+  telemetry_config.add("component", "@EXT_MESSAGINGCONTROL_TELEMETRY_COMPONENT@")
+  configuration.add("telemetryconfig", telemetry_config)
