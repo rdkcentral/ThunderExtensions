@@ -680,17 +680,8 @@ namespace Publishers {
     public:
         void Message(const Core::Messaging::MessageInfo& metadata, const Core::Messaging::IEvent& event) override
         {
-                TRACE_L1("[TELEMETRY_DEBUG] TelemetryOutput::Message: Received telemetry message Category: %s, Module: %s",
-                    metadata.Category().c_str(),
-                    metadata.Module().c_str()
-                );
             if (metadata.Type() == Core::Messaging::Metadata::type::TELEMETRY) {
                 const Core::Messaging::TelemetryMessage* telemetry = static_cast<const Core::Messaging::TelemetryMessage*>(&event);
-                TRACE_L1("[TELEMETRY_DEBUG] TelemetryOutput::Message: Sending telemetry message to backend. Category: %s, Module: %s,  Type: %d",
-                    metadata.Category().c_str(),
-                    metadata.Module().c_str(),
-                    static_cast<TelemetryBackend_ValueType>(telemetry->Type())
-                );
                 TelemetryBackend_Send(
                     metadata.Category().c_str(),
                     metadata.Module().c_str(),

@@ -359,11 +359,6 @@ namespace Plugin {
             _callback = callback;
 
             if (_callback != nullptr) {
-                 TRACE_L1("[MessageControl diagnostic] Starting worker: instance=%p, callback=%p, dataSize=%u",
-                    static_cast<void*>(this),
-                    static_cast<void*>(_callback),
-                    static_cast<unsigned>(Messaging::MessageUnit::Instance().ConfiguredDataSize()));
-
                 _worker->Run();
             }
 
