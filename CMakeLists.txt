@@ -23,7 +23,7 @@ find_package(WPEFramework)
 
 option(EXT_PLUGIN_INITIALIZER "Include Plugin Initializer Extension" OFF)
 option(EXT_SYSTEMD_CONNECTOR "Include Systemd Connector Extension" OFF)
-option(EXT_MESSAGINGCONTROL "Include Messaging Control Extension" OFF)
+option(EXT_MESSAGING_CONTROL "Include Messaging Control Extension" OFF)
 
 set(INTERFACES_PATTERNS "I*.h" CACHE STRING "Patterns matching files for which stubs should be generated")
 set(JSONRPC_PATTERNS "*.json" CACHE STRING "Patterns matching files for which json stubs should be generated")
@@ -57,7 +57,7 @@ if(EXT_SYSTEMD_CONNECTOR)
     add_subdirectory(SystemdConnector)
 endif()
 
-if(EXT_MESSAGINGCONTROL)
+if(EXT_MESSAGING_CONTROL)
     add_subdirectory(MessagingControl)
 endif()
 
