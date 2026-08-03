@@ -682,6 +682,7 @@ namespace Publishers {
         {
             if (metadata.Type() == Core::Messaging::Metadata::type::TELEMETRY) {
                 const Core::Messaging::TelemetryMessage* telemetry = static_cast<const Core::Messaging::TelemetryMessage*>(&event);
+
                 TelemetryBackend_Send(
                     metadata.Category().c_str(),
                     metadata.Module().c_str(),
