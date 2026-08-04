@@ -23,7 +23,7 @@
  * @brief C interface for a telemetry backend.
  *
  *        The backend is selected at build time (static linking) and must
- *        implement all three functions below. MessageControl calls them
+ *        implement all three functions below. MessagingControl calls them
  *        directly.
  *
  *        Lifecycle:

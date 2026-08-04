@@ -32,15 +32,13 @@ find_package(CompileSettingsDebug CONFIG REQUIRED)
 
 option(TELEMETRY_BACKEND_T2_USE_MOCK "Build and link the mock telemetry_msgsender library for testing" OFF)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 if(TELEMETRY_BACKEND_T2_USE_MOCK)
     add_subdirectory(mock)
-    set(telemetry_msgsender_FOUND TRUE)
+    set(TELEMETRY_FOUND TRUE)
+    set(TELEMETRY_LIBRARIES telemetry_msgsender)
 else()
-    find_package(telemetry_msgsender QUIET)
-endif()
-
-if(NOT telemetry_msgsender_FOUND)
-    message(FATAL_ERROR "telemetry_msgsender library not found — set TELEMETRY_BACKEND_T2_USE_MOCK=ON to build with the mock library")
+    find_package(Telemetry QUIET)
 endif()
 
 add_library(${MODULE_NAME} STATIC
@@ -58,5 +56,11 @@ target_include_directories(${MODULE_NAME}
 target_link_libraries(${MODULE_NAME}
     PRIVATE
         CompileSettingsDebug::CompileSettingsDebug
-        ${NAMESPACE}Core::${NAMESPACE}Core
-        telemetry_msgsender::telemetry_msgsender)
+        ${NAMESPACE}Core::${NAMESPACE}Core)
+
+if (TELEMETRY_FOUND)
+    target_link_libraries(${MODULE_NAME} PRIVATE ${TELEMETRY_LIBRARIES})
+    target_include_directories(${MODULE_NAME} PRIVATE ${TELEMETRY_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR "telemetry_msgsender library not found — set TELEMETRY_BACKEND_T2_USE_MOCK=ON to build with the mock library")
+endif()

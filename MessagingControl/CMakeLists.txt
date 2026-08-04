@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(MessageControl)
+project(MessagingControl)
 
 cmake_minimum_required(VERSION 3.3)
 
@@ -27,15 +27,15 @@ set(MODULE_NAME ${NAMESPACE}${PROJECT_NAME})
 
 message("Setup ${MODULE_NAME} v${PROJECT_VERSION}")
 
-set(PLUGIN_MESSAGECONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
-set(PLUGIN_MESSAGECONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
-set(PLUGIN_MESSAGECONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
-set(PLUGIN_MESSAGECONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
-set(PLUGIN_MESSAGECONTROL_PORT "0" CACHE STRING "PORT address")
-set(PLUGIN_MESSAGECONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
-set(PLUGIN_MESSAGECONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
-option(PLUGIN_MESSAGECONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
-set(PLUGIN_MESSAGECONTROL_TELEMETRY_CONFIG "" CACHE STRING "JSON configuration string for the telemetry backend")
+set(EXT_MESSAGINGCONTROL_AUTOSTART true CACHE STRING "Automatically start plugin")
+set(EXT_MESSAGINGCONTROL_ABBREVIATED true CACHE STRING "Display abbreviated messages")
+set(EXT_MESSAGINGCONTROL_MAX_EXPORTCONNECTIONS 5 CACHE STRING "Maximum allowed export connections")
+set(EXT_MESSAGINGCONTROL_REMOTE "false" CACHE STRING "Remote binding details enabled")
+set(EXT_MESSAGINGCONTROL_PORT "0" CACHE STRING "PORT address")
+set(EXT_MESSAGINGCONTROL_BINDING "0.0.0.0" CACHE STRING "Binding IP Address")
+set(EXT_MESSAGINGCONTROL_INTERFACE "eth0" CACHE STRING "Interface to bind to")
+option(EXT_MESSAGINGCONTROL_TELEMETRY_T2 "Enable T2 telemetry backend (statically linked)" OFF)
+set(EXT_MESSAGINGCONTROL_TELEMETRY_COMPONENT "Thunder" CACHE STRING "Component string that should be used for the telemetry backend init")
 
 add_subdirectory(BuffersFlush)
 
@@ -48,7 +48,7 @@ find_package(${NAMESPACE}Messaging REQUIRED)
 find_package(CompileSettingsDebug CONFIG REQUIRED)
 
 add_library(${MODULE_NAME} SHARED 
-    MessageControl.cpp
+    MessagingControl.cpp
     MessageOutput.cpp
     Module.cpp)
 
@@ -75,7 +75,7 @@ target_link_libraries(${MODULE_NAME}
         ${NAMESPACE}Plugins::${NAMESPACE}Plugins
         ${NAMESPACE}Messaging::${NAMESPACE}Messaging)
 
-if(PLUGIN_MESSAGECONTROL_TELEMETRY_T2)
+if(EXT_MESSAGINGCONTROL_TELEMETRY_T2)
     add_subdirectory(TelemetryBackendT2)
 
     target_link_libraries(${MODULE_NAME}
@@ -88,6 +88,6 @@ if(PLUGIN_MESSAGECONTROL_TELEMETRY_T2)
 endif()
 
 install(TARGETS ${MODULE_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${STORAGE_DIRECTORY}/plugins COMPONENT ${NAMESPACE}_Runtime)
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${STORAGE_DIRECTORY}/extensions/ COMPONENT ${NAMESPACE}_Runtime)
 
-write_config(INSTALL_PATH "${CMAKE_INSTALL_FULL_SYSCONFDIR}/${NAMESPACE}/plugins/" CUSTOM_PARAMS_WHITELIST "${CMAKE_CURRENT_SOURCE_DIR}/../params.config")
+write_config(INSTALL_PATH "${CMAKE_INSTALL_FULL_SYSCONFDIR}/${NAMESPACE}/extensions/" CUSTOM_PARAMS_WHITELIST "${CMAKE_CURRENT_SOURCE_DIR}/../params.config")

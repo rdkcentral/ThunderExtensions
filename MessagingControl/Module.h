@@ -20,7 +20,7 @@
 #pragma once
 
 #ifndef MODULE_NAME
-#define MODULE_NAME Plugin_MessageControl
+#define MODULE_NAME Ext_MessagingControl
 #endif
 
 #include <messaging/messaging.h>
