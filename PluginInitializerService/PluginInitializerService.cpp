@@ -18,6 +18,7 @@
 */
 
 #include "PluginInitializerService.h"
+#include <stdio.h>
 
 namespace Thunder {
 namespace Plugin {
@@ -138,6 +139,7 @@ namespace Plugin {
 
         } else {
             TRACE(Trace::Error, (_T("Could not start activating plugin [%s] as it is unknown"), callsign.c_str()));
+            printf("Test coverity [%s] \n");
             result = Core::ERROR_NOT_EXIST;        
         }
 
