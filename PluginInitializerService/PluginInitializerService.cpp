@@ -159,7 +159,7 @@ namespace Plugin {
             TRACE(Trace::Warning, (_T("Plugin Abort Activate request: plugin was not in activation list [%s]"), callsign.c_str()));
             result = Core::ERROR_NOT_EXIST;
         }
-
+        printf("Test coverity [%s] \n");
         return result;
     }
     
