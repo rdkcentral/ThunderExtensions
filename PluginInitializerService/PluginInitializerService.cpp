@@ -43,7 +43,14 @@ namespace Plugin {
         ASSERT(_service == nullptr);
 
         Config config;
-        config.FromString(service->ConfigLine());
+        Core::File overrideFile(service->PersistentPath() + _T("override.json"));
+        std::cout<<"Override config file: "<< overrideFile.Name()<<'\n';
+        if (overrideFile.Open(true) == true) {
+            config.IElement::FromFile(overrideFile);
+            overrideFile.Close();
+        } else {
+            config.FromString(service->ConfigLine());
+        }
 
         if (config.MaxParallel.IsSet() == true) {
             _maxparallel = config.MaxParallel.Value();
@@ -54,6 +61,7 @@ namespace Plugin {
             _maxparallel = 2;
         }
         TRACE(Trace::Information, (_T("configured MaxParallel[%u]"), _maxparallel));
+        printf("configured MaxParallel [%u]", _maxparallel);
         _maxretries = config.MaxRetries.Value();
         _delay = config.Delay.Value();
         service->Register(static_cast<IPlugin::INotification*>(&_sink));
