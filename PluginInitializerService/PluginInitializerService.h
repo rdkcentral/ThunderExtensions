@@ -229,7 +229,7 @@ POP_WARNING()
                     _callback = nullptr;
                 }
 
-                // Note we cannot assert to verify if ActivateJob is active as it could outlive the PluginStarter (see comment in PluginStarter Actived method)
+                // Note we cannot assert to verify if ActivateJob is active as it could outlive the PluginStarter (see comment in PluginStarter Activated method)
                 ASSERT(_activateResultJob.IsValid() == false);
             }
 
