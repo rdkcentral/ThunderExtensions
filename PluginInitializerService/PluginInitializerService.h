@@ -393,7 +393,7 @@ POP_WARNING()
                     TRACE(Trace::Warning, (_T("Plugin [%s] was activated but this was not initiated from the PluginInitializerService!!"), Callsign().c_str()));
                 }
 
-                // note: we cannot revoke the ActivateJob as there is a very small chance an external plugin activation triggered the Activated notificaction but the PIS 
+                // note: we cannot revoke the ActivateJob as there is a very small chance an external plugin activation triggered the Activated notification but the PIS
                 // just started running the Activated job and the IShell Activate call then will wait for this Activated() call to finish but the Plugin Activate job from the PIS
                 // is blocked as the callstack leading to the notification has the Service lock (that is the actual issue here, Thunder should not hold the service lock when calling 
                 // the notifications (see RDKEMW-23869 for details). 
