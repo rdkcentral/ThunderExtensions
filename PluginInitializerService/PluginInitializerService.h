@@ -229,7 +229,7 @@ POP_WARNING()
                     _callback = nullptr;
                 }
 
-                ASSERT(_activateJob.IsValid() == false);
+                // Note we cannot assert to verify if ActivateJob is active as it could outlive the PluginStarter (see comment in PluginStarter active)
                 ASSERT(_activateResultJob.IsValid() == false);
             }
 
@@ -392,7 +392,13 @@ POP_WARNING()
                 } else {
                     TRACE(Trace::Warning, (_T("Plugin [%s] was activated but this was not initiated from the PluginInitializerService!!"), Callsign().c_str()));
                 }
-                SetInactive();
+
+                // note: we cannot revoke the ActivateJob as there is a very small chance an external plugin activation triggered the Activated notificaction but the PIS 
+                // just started running the Activated job and the IShell Activate call then will wait for this Activated() call to finish but the Plugin Activate job from the PIS
+                // is blocked as the callstack leading to the notification has the Service lock (that is the actual issue here, Thunder should not hold the service lock when calling 
+                // the notifications (see RDKEMW-23869 for details). 
+                ResultJobInactive();
+
                 NotifyInitiator(Exchange::IPluginAsyncStateControl::IActivationCallback::state::SUCCESS);
                 // we will be removed and destroyed from the caller
             }
@@ -564,16 +570,24 @@ POP_WARNING()
         private:
             void SetInactive()
             {
+                ResultJobInactive();
+                ActivateJobInactive();
+            }
+            void ResultJobInactive()
+            {
                 if (_activateResultJob.IsValid() == true) {
                     _activateResultJob->RevokeAndBlock();
                     _activateResultJob = std::move(ActivateResultJobProxyType()); // we can let of our reference (let's not use Release() on the proxy as that look a little confusing)
                 }
+            }
+            void ActivateJobInactive()
+            {
                 // note now awe are sure the _activateResultJob will not longer run at all, even if the _activateJob
                 // is running or will run... (so note order of revoking the _activateResultJob and _activateJob is important)
                 if (_activateJob.IsValid() == true) {
-                     _activateJob->Revoke(Core::ProxyType<Core::IDispatch>(_activateJob)); // note this revoke could be
-                     // while running the ActivationJob itself this is allowed, We can also not skip the revocation as the 
-                     //activation might also be the result of an externally triggered activation
+                    _activateJob->Revoke(Core::ProxyType<Core::IDispatch>(_activateJob)); // note this revoke could be
+                    // while running the ActivationJob itself this is allowed, We can also not skip the revocation as the
+                    // activation might also be the result of an externally triggered activation
                     _activateJob = std::move(ActivateJobProxyType()); // not active anymore (let's not use Release() on the proxy as that look a little confusing)
                 }
             }
@@ -1126,7 +1140,8 @@ POP_WARNING()
 
             PluginStarterContainer::iterator it = std::find(_pluginInitList.begin(), _pluginInitList.end(), callsign);
 
-            ASSERT(it != _pluginInitList.end()); // as this is triggered when the activation call has been done we expect the callsign to always be available (it was probably forgotten to revoke the PluginStarter::ActivateJob job)
+            // note we cannot assert if there actually is a PluginStarter to be found. It can happen that just when we removed the Activated pluginStarter from the list 
+            // because an external activation happened the ResultJob just runs, so it can be a valid situation that there is no PluginStarter to be found
 
             if (it != _pluginInitList.end()) {
                 PluginStarter::ResultCode resultcode = it->HandleActivationResult(result); // note must be inside the lock as it could be in parallel with an abort request.
