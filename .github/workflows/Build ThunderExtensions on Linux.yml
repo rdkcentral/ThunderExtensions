@@ -1,0 +1,27 @@
+name: Build ThunderExtensions on Linux
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/R4_4' }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["R4_4"]
+  pull_request:
+    branches: ["R4_4"]
+
+jobs:
+  Thunder:
+    uses: rdkcentral/Thunder/.github/workflows/Linux build template.yml@R4_4
+
+  ThunderInterfaces:
+    needs: Thunder
+    uses: rdkcentral/ThunderInterfaces/.github/workflows/Linux build template.yml@R4_4
+
+  ThunderExtensions:
+    needs: ThunderInterfaces
+    uses: ./.github/workflows/Linux build template.yml
