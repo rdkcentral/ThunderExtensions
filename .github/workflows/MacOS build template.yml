@@ -28,13 +28,13 @@ jobs:
         source venv/bin/activate
         pip install jsonref
 
-    - name: Download Thunder artifacts
+    - name: Download ThunderInterfaces artifacts
       uses: actions/download-artifact@v4
       with:
-        name: Thunder-${{matrix.build_type}}-artifact
+        name: ThunderInterfaces-${{matrix.build_type}}-artifact
         path: ${{matrix.build_type}}
 
-    - name: Unpack Thunder artifacts
+    - name: Unpack ThunderInterfaces artifacts
       run: |
         tar -xvzf ${{matrix.build_type}}/${{matrix.build_type}}.tar.gz
         rm ${{matrix.build_type}}/${{matrix.build_type}}.tar.gz
@@ -48,7 +48,8 @@ jobs:
         -DCMAKE_MODULE_PATH="${PWD}/${{matrix.build_type}}/install/usr/include/WPEFramework/Modules" \
         -DCMAKE_PREFIX_PATH="${PWD}/${{matrix.build_type}}/install/usr" \
         -DEXT_PLUGIN_INITIALIZER=ON \
-        -DEXT_SYSTEMD_CONNECTOR=OFF
+        -DEXT_SYSTEMD_CONNECTOR=OFF \
+        -DEXT_MESSAGE_CONTROL=ON
         cmake --build ${{matrix.build_type}}/build/ThunderExtensions --target install
 
     - name: Tar files
