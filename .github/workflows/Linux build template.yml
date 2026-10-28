@@ -5,6 +5,11 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      thunderextensions_ref:
+        description: 'ThunderExtensions ref to checkout (branch, tag, or SHA). Defaults to R4_4.'
+        type: string
+        default: 'R4_4'
 
 jobs:
   ThunderExtensions:
@@ -23,8 +28,11 @@ jobs:
         architecture: ${{ matrix.architecture }}
         systemd: true
 
-    - name: Checkout current repository
+    - name: Checkout ThunderExtensions
       uses: actions/checkout@v5
+      with:
+        repository: ${{ github.repository == 'rdkcentral/ThunderExtensions' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || 'rdkcentral/ThunderExtensions' }}
+        ref: ${{ github.repository == 'rdkcentral/ThunderExtensions' && github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.thunderextensions_ref }}
 
     - name: Set up Python environment
       run: |
