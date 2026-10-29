@@ -22,6 +22,12 @@ jobs:
     needs: Thunder
     uses: rdkcentral/ThunderInterfaces/.github/workflows/Linux build template.yml@master
 
+  ThunderPluginActivator:
+    needs: Thunder
+    uses: rdkcentral/ThunderPluginActivator/.github/workflows/Linux build template.yml@main
+    with:
+      thunderextensions-ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
   ThunderExtensions:
     needs: ThunderInterfaces
     uses: ./.github/workflows/Linux build template.yml
