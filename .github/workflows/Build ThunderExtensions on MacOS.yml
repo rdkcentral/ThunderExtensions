@@ -25,3 +25,5 @@ jobs:
   ThunderExtensions:
     needs: ThunderInterfaces
     uses: ./.github/workflows/MacOS build template.yml
+    with:
+      source-repository: ${{ github.repository }}

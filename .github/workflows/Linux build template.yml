@@ -5,6 +5,12 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      source-repository:
+        description: Repository containing the ThunderExtensions source
+        required: false
+        type: string
+        default: rdkcentral/ThunderExtensions
 
 jobs:
   ThunderExtensions:
@@ -40,8 +46,8 @@ jobs:
     - name: Checkout ThunderExtensions
       uses: actions/checkout@v5
       with:
-        repository: rdkcentral/ThunderExtensions
-        ref: ${{ github.repository != 'rdkcentral/ThunderExtensions' && steps.release.outputs.ref || '' }}
+        repository: ${{ inputs.source-repository }}
+        ref: ${{ github.repository != inputs.source-repository && steps.release.outputs.ref || '' }}
 
     - name: Log source revisions
       shell: bash
