@@ -10,9 +10,9 @@ concurrency:
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: ["main", "R*"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "R*"]
 
 jobs:
   Thunder:
