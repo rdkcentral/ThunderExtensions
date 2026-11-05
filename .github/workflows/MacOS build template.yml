@@ -5,6 +5,12 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      source-repository:
+        description: Repository containing the ThunderExtensions source
+        required: false
+        type: string
+        default: rdkcentral/ThunderExtensions
 
 jobs:
   ThunderExtensions:
@@ -16,8 +22,30 @@ jobs:
 
     name: Build type - ${{matrix.build_type}}
     steps:
-    - name: Checkout current repository
+    - name: Resolve release dependency branch
+      id: release
+      shell: bash
+      env:
+        BUILD_BRANCH: ${{ github.base_ref || github.ref_name }}
+        REF_TYPE: ${{ github.ref_type }}
+      run: |
+        release_ref=
+        if [[ "$REF_TYPE" == 'branch' && "$BUILD_BRANCH" == R* ]]; then
+          release_ref="refs/heads/$BUILD_BRANCH"
+        fi
+        echo "ref=$release_ref" >> "$GITHUB_OUTPUT"
+        echo "Dependency branch: ${release_ref:-repository default}"
+
+    - name: Checkout ThunderExtensions
       uses: actions/checkout@v5
+      with:
+        repository: ${{ inputs.source-repository }}
+        ref: ${{ github.repository != inputs.source-repository && steps.release.outputs.ref || '' }}
+
+    - name: Log source revisions
+      shell: bash
+      run: |
+        git log -1 --format='ThunderExtensions: %H'
 
     - name: Install necessary packages
       env:

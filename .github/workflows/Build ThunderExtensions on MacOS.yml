@@ -10,9 +10,9 @@ concurrency:
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: ["main", "R*"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "R*"]
 
 jobs:
   Thunder:
@@ -25,3 +25,5 @@ jobs:
   ThunderExtensions:
     needs: ThunderInterfaces
     uses: ./.github/workflows/MacOS build template.yml
+    with:
+      source-repository: ${{ github.repository }}
